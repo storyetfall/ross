@@ -1,7 +1,7 @@
 # Example usage: python3 gen_ss.py sqrt1111
 
 
-
+# import objgraph
 import in_form
 import sys
 
@@ -31,32 +31,64 @@ def make_swap(state, swap):
 def pos_swaps(swap_dict):
     '''possible swaps from swap location dictionary'''
     return list({k:v for (k,v) in swap_dict.items() if v}.keys())
-
+'''
 def update_sd(n_state, prev_swap_dict, swap):
     new_swap_dict = prev_swap_dict.copy()
-    mut = [[swap[i], swap[i]-1, swap[i]-rowl] for i in range(2)]
-    mut = [i for i in mut[0] + mut[1] if i>=0]
-    for i in mut:
+    j, k = swap
+    mut = []
+    for i in [j, k]:
+        if i % rowl != 0:
+            mut.append((i-1, i))
         if (i+1) % rowl != 0:
-            new_swap_dict[(i, i+1)] = n_state[i] in swaps[n_state[i+1]]
+            mut.append((i, i+1))
         if i + rowl < len(n_state):
-            new_swap_dict[(i, i+rowl)] = n_state[i] in swaps[n_state[i+rowl]]
+            mut.append((i, i+rowl))
+        if i - rowl >= 0:
+            mut.append((i-rowl, i))
+    for m in mut:
+        new_swap_dict[m] = n_state[m[0]] in swaps[n_state[m[1]]]
     return new_swap_dict
+'''
+def update(n_state, prev_swap_list, swap):
+    j, k = swap
+    mut = []
+    for i in [j, k]:
+        if i % rowl != 0:
+            mut.append((i-1, i))
+        if (i+1) % rowl != 0:
+            mut.append((i, i+1))
+        if i + rowl < len(n_state):
+            mut.append((i, i+rowl))
+        if i - rowl >= 0:
+            mut.append((i-rowl, i))
+    new_swap_list = []
+    for s in prev_swap_list:
+        if s not in mut:
+            new_swap_list.append(s)
+    for s in mut:
+        if n_state[s[0]] in swaps[n_state[s[1]]]:
+            new_swap_list.append(s)
+    return new_swap_list
 
-def traverse(start):
+def traverse(start, wj_d):
     unchecked = [start]
-    statespace = {start:gen_swap_dict(start)}
+    statespace = {start:pos_swaps(gen_swap_dict(start))}
     while unchecked != []:
-        for swap in pos_swaps(statespace[unchecked[0]]):
+        for swap in statespace[unchecked[0]]:
+            if swap in wj_d.keys():
+                swap = wj_d[swap]
             n_state = make_swap(unchecked[0], swap)
-            if n_state not in statespace.keys():
-                statespace[n_state] = update_sd(n_state, statespace[unchecked[0]], swap)
+            if n_state not in statespace:
+                statespace[n_state] = update(n_state, statespace[unchecked[0]], swap)
                 unchecked.append(n_state)
         del unchecked[0]
+        if len(statespace) % 1000 == 0:
+            print(len(statespace))
     return statespace
 
 filename = sys.argv[1]
 sp_map = in_form.get_species_map(default_swaps)
 init_state, swaps, rowl = in_form.trans2in(default_swaps, filename, sp_map)
-ss = traverse(init_state)
+wj_d = in_form.wirejumps(sys.argv[2])
+ss = traverse(init_state, wj_d)
 in_form.trans2out(list(ss.keys()), filename, sp_map)

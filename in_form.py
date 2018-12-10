@@ -49,3 +49,13 @@ def trans2out(states, filename, sp_map):
     f = open('statespaces/'+filename, 'w+')
     f.writelines(tstates)
     print("Wrote to file!")
+
+def wirejumps(filename):
+    f = open(filename, 'r')
+    wj_d = {}
+    for line in f.readlines():
+        [a, b, c, d] = line.strip().split()
+        [a, b, c, d] = [int(a), int(b), int(c), int(d)]
+        wj_d[(min(a,b), max(a,b))] = (a,d)
+        wj_d[(min(c,d), max(c,d))] = (a,d)
+    return wj_d
