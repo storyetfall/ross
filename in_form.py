@@ -77,7 +77,7 @@ def wirejumps(filename):
     return wj_d
 
 def checkouts(filename, i1, i2):
-    f = open('statespace/'+filename, 'r')
+    f = open('statespaces/'+filename, 'r')
     output = {}
     for line in f.readlines():
         if (line[i1], line[i2]) in output:
@@ -85,6 +85,6 @@ def checkouts(filename, i1, i2):
         else:
             output[(line[i1], line[i2])] = 1
     f.close()
-    f = open('outputs/'+filename, 'r')
+    f = open('outputs/'+filename, 'w+')
     f.write(str(output))
     f.close()
