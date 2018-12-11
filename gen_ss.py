@@ -87,11 +87,10 @@ def hitting(start, i1, i2, n):
     output["HT"] /= n
     return output
 
-filename = sys.argv[1]
-sp_map = in_form.get_species_map(default_swaps)
-init_state, swaps, rowl = in_form.trans2in(default_swaps, filename, sp_map)
-print(hitting(init_state, 566, 799, 10))
-# wj_d = in_form.wirejumps(sys.argv[2])
-# ss = traverse(init_state, wj_d)
-# in_form.trans2out(list(ss.keys()), filename, sp_map)
-# in_form.display(filename, sp_map, rowl)
+for i in range(1, len(sys.argv)):
+    filename = sys.argv[i]
+    init_state, swaps, rowl = in_form.trans2in(default_swaps, filename, sp_map)
+    wj_d = in_form.wirejumps(sys.argv[2])
+    ss = traverse(init_state, wj_d)
+    in_form.trans2out(list(ss.keys()), filename)
+    in_form.checkouts(filename, 566, 799)

@@ -45,7 +45,7 @@ def trans2in(swaps, filename, sp_map):
     f.close()
     return tstate, tswaps, rowl
 
-def trans2out(states, filename, sp_map):
+def trans2out(states, filename):
     tstates = [s+'\n' for s in states]
     f = open('statespaces/'+filename, 'w+')
     f.writelines(tstates)
@@ -67,7 +67,7 @@ def display(filename, sp_map, rowl):
     print("Made pretty file!")
 
 def wirejumps(filename):
-    f = open(filename, 'r')
+    f = open('jumps/'+filename, 'r')
     wj_d = {}
     for line in f.readlines():
         [a, b, c, d] = line.strip().split()
@@ -75,3 +75,16 @@ def wirejumps(filename):
         wj_d[(min(a,b), max(a,b))] = (a,d)
         wj_d[(min(c,d), max(c,d))] = (a,d)
     return wj_d
+
+def checkouts(filename, i1, i2):
+    f = open('statespace/'+filename, 'r')
+    output = {}
+    for line in f.readlines():
+        if (line[i1], line[i2]) in output:
+            output[(line[i1], line[i2])] += 1
+        else:
+            output[(line[i1], line[i2])] = 1
+    f.close()
+    f = open('outputs/'+filename, 'r')
+    f.write(str(output))
+    f.close()
