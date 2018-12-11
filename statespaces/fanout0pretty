@@ -1,0 +1,54 @@
+z z 0 z
+1 z J w
+J 2 K w
+0 4 4 z
+5 2 I z
+
+z z 0 z
+1 z J w
+J 2 K w
+4 0 4 z
+5 2 I z
+
+z z 0 z
+1 z J w
+J 2 K w
+4 4 0 z
+5 2 I z
+
+z z 0 z
+1 z J w
+J 2 K w
+4 4 I z
+5 2 0 z
+
+z z 0 z
+1 z J w
+J 2 I w
+4 4 K z
+5 2 0 z
+
+z z 0 z
+1 z I w
+J 2 J w
+4 4 K z
+5 2 0 z
+
+z z I z
+1 z 0 w
+J 2 J w
+4 4 K z
+5 2 0 z
+
+z z I z
+1 z w 0
+J 2 J w
+4 4 K z
+5 2 0 z
+
+z z I z
+1 z w w
+J 2 J 0
+4 4 K z
+5 2 0 z
+

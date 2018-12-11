@@ -1,7 +1,5 @@
 # Example usage: python3 gen_ss.py sqrt1111
-
-
-# import objgraph
+import random
 import in_form
 import sys
 
@@ -31,24 +29,7 @@ def make_swap(state, swap):
 def pos_swaps(swap_dict):
     '''possible swaps from swap location dictionary'''
     return list({k:v for (k,v) in swap_dict.items() if v}.keys())
-'''
-def update_sd(n_state, prev_swap_dict, swap):
-    new_swap_dict = prev_swap_dict.copy()
-    j, k = swap
-    mut = []
-    for i in [j, k]:
-        if i % rowl != 0:
-            mut.append((i-1, i))
-        if (i+1) % rowl != 0:
-            mut.append((i, i+1))
-        if i + rowl < len(n_state):
-            mut.append((i, i+rowl))
-        if i - rowl >= 0:
-            mut.append((i-rowl, i))
-    for m in mut:
-        new_swap_dict[m] = n_state[m[0]] in swaps[n_state[m[1]]]
-    return new_swap_dict
-'''
+
 def update(n_state, prev_swap_list, swap):
     j, k = swap
     mut = []
@@ -72,7 +53,7 @@ def update(n_state, prev_swap_list, swap):
 
 def traverse(start, wj_d):
     unchecked = [start]
-    statespace = {start:pos_swaps(gen_swap_dict(start))}
+    statespace ={start:pos_swaps(gen_swap_dict(start))}
     while unchecked != []:
         for swap in statespace[unchecked[0]]:
             if swap in wj_d.keys():
@@ -82,13 +63,35 @@ def traverse(start, wj_d):
                 statespace[n_state] = update(n_state, statespace[unchecked[0]], swap)
                 unchecked.append(n_state)
         del unchecked[0]
-        if len(statespace) % 1000 == 0:
-            print(len(statespace))
+        if len(statespace) % 10000 == 0:
+            print("States visited: %d" % len(statespace))
     return statespace
+
+def hitting(start, i1, i2, n):
+    output = {"HT":0}
+    for i in range(n):
+        state = start
+        ht = 0
+        ps = pos_swaps(gen_swap_dict(start))
+        while state[i1] == 'w' or state[i2] == 'w':
+            swap = random.choice(ps)
+            state = make_swap(state, swap)
+            ht += float(1)/len(ps)
+            ps = update(state, ps, swap)
+        if (state[i1], state[i2]) in output:
+            output[(state[i1], state[i2])] += 1
+        else:
+            output[(state[i1], state[i2])] = 1
+        output["HT"] += ht
+        print(output)
+    output["HT"] /= n
+    return output
 
 filename = sys.argv[1]
 sp_map = in_form.get_species_map(default_swaps)
 init_state, swaps, rowl = in_form.trans2in(default_swaps, filename, sp_map)
-wj_d = in_form.wirejumps(sys.argv[2])
-ss = traverse(init_state, wj_d)
-in_form.trans2out(list(ss.keys()), filename, sp_map)
+print(hitting(init_state, 566, 799, 10))
+# wj_d = in_form.wirejumps(sys.argv[2])
+# ss = traverse(init_state, wj_d)
+# in_form.trans2out(list(ss.keys()), filename, sp_map)
+# in_form.display(filename, sp_map, rowl)

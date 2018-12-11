@@ -42,13 +42,29 @@ def trans2in(swaps, filename, sp_map):
     rowl = len(state[0])
     tstate = translate(state, sp_map)
     tstate = ''.join([''.join(l) for l in tstate])
+    f.close()
     return tstate, tswaps, rowl
 
 def trans2out(states, filename, sp_map):
     tstates = [s+'\n' for s in states]
     f = open('statespaces/'+filename, 'w+')
     f.writelines(tstates)
+    f.close()
     print("Wrote to file!")
+
+def display(filename, sp_map, rowl):
+    f = open('statespaces/'+filename, 'r')
+    states = f.readlines()
+    f.close()
+    f = open('statespaces/%spretty' % filename, 'w+')
+    for state in states:
+        state = list(state)
+        for i in range(len(state)):
+            if (i+1) % rowl == 0:
+                f.write(" ".join(state[i-rowl+1:i+1]) + '\n')
+        f.write('\n')
+    f.close()
+    print("Made pretty file!")
 
 def wirejumps(filename):
     f = open(filename, 'r')
