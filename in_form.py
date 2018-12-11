@@ -23,9 +23,10 @@ def translate(sl, sp_map):
             sl[i][j] = sp_map[sl[i][j]]
     return sl
 
-def genswaps(swaps):
+def genswaps(swaps, sp_map):
     '''Turns list of swaps into dictionary of rules'''
     rulesdict = {"n":[],"z":[]}
+    swaps = translate(swaps, sp_map)
     for swap in swaps:
         for sp in swap:
             if sp not in rulesdict.keys():
@@ -35,15 +36,14 @@ def genswaps(swaps):
                         rulesdict[sp] += [x for x in rule if x != sp]
     return rulesdict
 
-def trans2in(swaps, filename, sp_map):
-    tswaps = genswaps(translate(swaps, sp_map))
+def trans2in(filename, sp_map):
     f = open('circuits/'+filename, 'r')
     state = [line.strip().split() for line in f.readlines()]
     rowl = len(state[0])
     tstate = translate(state, sp_map)
     tstate = ''.join([''.join(l) for l in tstate])
     f.close()
-    return tstate, tswaps, rowl
+    return tstate, rowl
 
 def trans2out(states, filename):
     tstates = [s+'\n' for s in states]

@@ -89,9 +89,10 @@ def hitting(start, i1, i2, n):
 
 sp_map = in_form.get_species_map(default_swaps)
 wj_d = in_form.wirejumps(sys.argv[1])
+swaps = in_form.genswaps(default_swaps, sp_map)
 for i in range(2, len(sys.argv)):
     filename = sys.argv[i]
-    init_state, swaps, rowl = in_form.trans2in(default_swaps, filename, sp_map)
+    init_state, rowl = in_form.trans2in(filename, sp_map)
     ss = traverse(init_state, wj_d)
     in_form.trans2out(list(ss.keys()), filename)
-    in_form.checkouts(filename, 566, 799)
+    in_form.checkouts(filename, 0,1)#566, 799)
